@@ -222,7 +222,7 @@
                 <div class="parallax-divider">
                     <img src="images/icons/60px/white/appbar.book.open.writing.png" alt="Read More About Us">
                 </div>
-                <h2 class="parallax-subtitle">A total effect that is <span>greater than the sum of the parts</span>
+                <h2 class="parallax-subtitle">A mountain bike experience that is <span>greater than the sum of the parts!</span>
                 </h2>
             </div>
         </div>
@@ -263,304 +263,6 @@
                 <div id="diagram" class="" style="display:none;"></div>
             </div>
 
-
-
-
-            <div class="twelve columns page-content no-top-margin">
-                <p class="testimonial-content mobile-four">Apply the <code>Transactional()</code> decorator to transactional methods.</p>
-            </div>
-
-            <div class="code-sample"><pre><code>@Injectable()
-export class RouteRepository {
-
-    constructor(
-        @InjectPersistenceManager() readonly persistenceManager: PersistenceManager,
-        @InjectCypher(__dirname, 'routesBetween') readonly routesBetween: CypherStatement) {}
-
-    @Transactional()
-    async findFastestBetween(start: string,destination: string): Promise&lt;Route&gt; {
-        return this.persistenceManager.getOne(
-            new QuerySpecification&lt;Route&gt;()
-                .withStatement(this.routesBetween)
-                .bind([start, destination])
-                .limit(1)
-                .transform(Route)
-        );
-    }
-}
-            </code></pre>
-            </div>
-
-            <div class="twelve columns page-content no-top-margin">
-                <p class="testimonial-content mobile-four">By <a href="https://github.com/liberation-data/drivine/blob/master/src/transaction/Propagation.ts">default</a> the decorator will start a new transaction if one does not exist. Otherwise it will participate in an existing
-                    transaction. When the outermost transactional method completes, the entire stack will be committed. Meanwhile,
-                    if an error is thrown, the transaction is rolled back.</p>
-                <p class="testimonial-content mobile-four">We can now compose transactional services from one or more repositories as follows:</p>
-            </div>
-
-            <div class="code-sample"><pre><code>export class TransferService {
-
-    constructor(readonly accountRepo: AccountRepository) {}
-
-
-    @Transactional()
-    async transfer(sourceId: string, targetId: string, amount: number): Promise&lt;void&gt; {
-
-        const sourceAccount = await this.accountRepo.findById(sourceId);
-        sourceAccount.deductFunds(amount);
-        await this.accountRepo.update(sourceAccount);
-
-        // Throws Error! Invalid Id!
-        const targetAccount = await this.accountRepo.findById(targetId);
-        targetAccount.depositFunds(amount);
-        await this.accountRepo.update(targetRepo);
-    }
-}
-            </code></pre>
-            </div>
-
-            <div class="twelve columns page-content no-top-margin">
-                <p class="testimonial-content mobile-four">In the above example, if the <code>targetId</code> is invalid, all data operations are rolled back. Otherwise a
-                    commit is performed when the outermost transactional method completes. Note that we used normal error handling - implementing boiler-plate code was not required and code clearly represented a single task.</p>
-            </div>
-
-
-            <!-- STREAMING -->
-            <div class="twelve columns page-content" style="margin-top: 40px">
-                <h3 class="about-us-title">Streaming:</h3>
-
-                <p class="testimonial-content mobile-four">It is well and good to assemble an application where transactional services are made up from an aggregate of
-                    repositories. However, for some use-cases the volume of data is too large to be buffered in a single result set.</p>
-                <p class="testimonial-content mobile-four">Fortunately the <code>PersistenceManager</code> that we saw earlier provides the ability to open a <code>Cursor&lt;T&gt;</code>, which provides two kinds of streaming capabilities.</p>
-
-                <p class="testimonial-content mobile-four">Let’s explore. In the example below, the repository method promises to return a <code>Cursor</code> for a <code>Route</code>.</p>
-
-            </div>
-
-            <div class="code-sample"><pre><code>@Transactional()
-async findRoutesBetween(start: string, destination: string): Promise&lt;Cursor&lt;Route&gt;&gt; {
-    return this.persistenceManager.openCursor(
-        new CursorSpecification&lt;Route&gt;()
-            .withStatement(this.routesBetween)
-            .bind([start, destination])
-            .batchSize(5)
-            .transform(Route)
-    );
-}
-            </code></pre>
-            </div>
-
-            <div class="twelve columns page-content no-top-margin">
-                <h3 class="about-us-title">Cursors are AsyncIterable</h3>
-                <p class="testimonial-content mobile-four"><code>Cursor&lt;T&gt;</code> implements <code>AsyncIterable</code>. This means that it can be used with a '<code>for
-                    await...of</code>' statement. During the execution of the loop, results will be pullled in batches, until the
-                    upstream is depleted.</p>
-            </div>
-
-            <div class="code-sample"><pre><code>const cursor = await repo.asyncRoutesBetween('Cavite Island', 'NYC');
-for await (const item of cursor) {
-    // The cursor will read more results, executing
-    // database reads, until the stream is consumed.
-}
-            </code></pre>
-            </div>
-
-            <div class="twelve columns page-content no-top-margin">
-                <h3 class="about-us-title">Cursors can pose as a Readable stream</h3>
-                <p class="testimonial-content mobile-four">Besides <code>AsyncIterable</code> cursors turn themselves into a <code>Readable</code> stream. Why would we need this? <code>AsyncIterable</code> is helpful, but it may lead to problems when a tight loop is pushing data into a stream, such as a file-stream. Even though data is pulled in batches, pushing too quickly into a stream will cause problems. The following example could potentially crash:</p>
-            </div>
-
-            <div class="code-sample"><pre><code>const cursor = await repo.asyncRoutesBetween('Cavite Island', 'NYC');
-for await (const item of cursor) {
-    const result = fs.write(item);
-}
-            </code></pre>
-            </div>
-
-            <div class="twelve columns page-content no-top-margin">
-                <p class="testimonial-content mobile-four">Don't overload stream buffers - this is signified when <code>fs.write(item)</code> returns
-                    false. If you ignore this warning and continue, your application can crash. The solution is as follows:</p>
-            </div>
-
-            <div class="code-sample"><pre><code>cursor.asStream().pipe(fileStream);
-await StreamUtils.untilClosed(fileStream);
-</code></pre>
-            </div>
-
-            <div class="twelve columns page-content no-top-margin">
-                <p class="testimonial-content mobile-four">Now new information will be pulled from the cursor as needed. It is the sink stream (filestream) that will
-                    coordinate this, and at the rate at which it can handle.</p>
-            </div>
-
-
-            <!-- Object Mapping -->
-            <div class="twelve columns page-content" style="margin-top: 40px">
-                <h3 class="about-us-title">Object Mapping:</h3>
-
-                <p class="testimonial-content mobile-four">Drivine provides graph-to-object mapping facilities, however, as described in the introduction, due to its design
-                    goal of <strong>optimal performance</strong> it differentiates from the most typical approaches.</p>
-                <p class="testimonial-content mobile-four">In a typical application that uses an ORM or OGM:</p>
-
-            </div>
-
-            <div class="twelve columns page-content no-top-margin">
-                <ul class="testimonial-content bullet-list mobile-four">
-                    <li>Generalised <em>entities</em> - a network of classes that represent things in our domain are defined.</li>
-                    <li>Instances of these domain entities are loaded. The OGM tool generates queries for this on our behalf.</li>
-                    <li>Having loaded instances of our generalised entities, information is plucked and mapped onto <em>use-case</em>
-                        specific payload objects.
-                    </li>
-                </ul>
-            </div>
-
-            <div class="twelve columns page-content no-top-margin">
-                <h3 class="about-us-title">Trouble Ahead:</h3>
-                <p class="testimonial-content mobile-four">The approach can work, however when an application needs to be highly scaleable, several problems are
-                    entailed:</p>
-
-            </div>
-
-            <div class="twelve columns page-content no-top-margin">
-                <ul class="testimonial-content bullet-list mobile-four no-top-margin">
-                    <li>There is an overhead to the mapping, both in terms of implementation effort as well as runtime performance
-                        cost.
-                    </li>
-                    <li>Because the queries are system-generated, there is limited opportunity to efficiently undertake performance
-                        tuning.
-                    </li>
-                    <li>Similarly, because the entities are generalized, <strong>it is unlikely that the the generated queries will be the
-                        optimal ones for a <em>specific use-case</em></strong>.
-                    </li>
-                    <li>Finally, it is an unfortunate truth that the main <em>benefit</em> of generalised entities, a rich set of
-                        expressive objects is usually forgone. We end up with an <strong>Anemic Domain Model</strong>, which
-                        <a href="https://en.wikipedia.org/wiki/Martin_Fowler_(software_engineer)">Martin Fowler</a>
-                         writes about <strong><a href="https://martinfowler.com/bliki/AnemicDomainModel.html" target="_blank"
-                                                                rel="noopener">here</a></strong>.</li>
-                </ul>
-            </div>
-
-            <div class="twelve columns page-content no-top-margin">
-                <p class="testimonial-content mobile-four">In the referenced article, Mr Fowler states that he is not sure <em>why</em> the anemic domain model anti-pattern is so predominant. In my opinion, one
-                    primary cause is that most ORM/OGM tools do not offer to inject service dependencies onto the entities.
-                In order to exhibit richer, more expressive behavior, entities will surely collaborating services to assist in that. To support rich models, the OGM tool can offer to inject registered services, so that this entities have an opportunity to provide expressive <em>behaviors</em> and not just holders of data. A future version of Drivine may offer to do this.</p>
-                <p class="testimonial-content mobile-four">In the meantime, whatever the cause, it still does nothing to address the first four points, so let's explore . . </p>
-                <h3 class="about-us-title">Object Mapping - Drivine Approach:</h3>
-                <p class="testimonial-content mobile-four">In order to benefit from cleanly architected code that can scale to many thousands of transactions per second,
-                    Drivine takes the following approach:</p>
-            </div>
-
-
-            <div class="twelve columns page-content no-top-margin">
-                <ul class="testimonial-content bullet-list mobile-four no-top-margin">
-                    <li>Queries are defined by <em>you</em> in a self-contained file. Because they are self-contained, they can
-                        be modified, formatted, tested and tuned easily using the tool of your choice. I personally like <a
-                                href="https://plugins.jetbrains.com/plugin/8087-graph-database-support" target="_blank"
-                                rel="noopener">IntelliJ’s Graph Database Support</a>.
-                    </li>
-                    <li>Queries are injected to be used in repositories with a <a href="https://github.com/liberation-data/drivine/blob/master/src/DrivineInjectionDecorators.ts">decorator</a>.
-                    </li>
-                    <li>Rather than defining a generalised set of entities, focus on <em>use-case specific scenarios</em>
-                        that project or update a sub-graph from the underlying whole graph. You can
-                        extract generalised entities later on, however avoid <a
-                                href="https://en.wikipedia.org/wiki/Big_Design_Up_Front" target="_blank" rel="noopener">big design
-                            up-front</a>.
-                    </li>
-                </ul>
-            </div>
-
-
-            <div class="twelve columns page-content no-top-margin">
-                <h3 class="about-us-title">What can be mapped:</h3>
-                <p class="testimonial-content mobile-four">We can need perform type-coercion of dates, numbers or enums. We can load a set of related entities into a type. Object mapping is provided by the <a href="https://github.com/typestack/class-transformer">class transformer</a>.</p>
-            </div>
-
-            <div class="code-sample"><pre><code>export class Route {
-    readonly start: string;
-    readonly destination: string;
-    readonly metros: string[];
-    @Expose({ name: 'travel_time' })
-    readonly travelTime: number;
-
-    @Type(() =&gt; Photo)
-    readonly significantSites: Photo[];
-
-    constructor(start: string, destination: string, metros: string[], travelTime: number) {
-        this.start = start;
-        this.destination = destination;
-        this.metros = metros;
-        this.travelTime = travelTime;
-    }
-
-    /**
-     * Returns metros omitting the start and destination.
-     */
-    intermediateMetros(): string[] {
-        const result = [...this.metros];
-        result.shift();
-        result.pop();
-        return result;
-    }
-}
-            </code></pre>
-            </div>
-
-
-            <!-- TESTING -->
-            <div class="twelve columns page-content">
-                <h3 class="about-us-title">Testing:</h3>
-
-                <p class="testimonial-content mobile-four">To test transactional methods, we need to initialize the Drivine within the
-                    test context. Here's how: </p>
-            </div>
-
-            <div class="code-sample"><pre><code>it('should return the fastest route between start and dest ', async () => {
-    return inDrivineContext().withTransaction({rollback: true}).run(async () => {
-        const result = await request(app.getHttpServer())
-            .get('/routes/between/Pigalle/NYC')
-            .expect(HttpStatus.OK);
-
-        expect(result.body[0].travelTime).toEqual(8.5);
-    });
-});
-</code></pre>
-            </div>
-
-            <p class="testimonial-content mobile-four">Optionally, we can run integration and end-to-end tests
-                <strong>run inside a roll-back transaction</strong>. This is useful when testing against shared data and/or
-                when testing transactional database operations in parallel. Within the test it is possible to read and
-                make assertions upon uncommitted data, after which it is rolled back, restoring the database to a clean state.</p>
-
-            <div class="twelve columns page-content">
-
-                <h3 class="about-us-title">Bootsrapping All Tests:</h3>
-
-                <p class="testimonial-content mobile-four">Avoid repetition. It is possible to run all tests for a given spec with Drivine,
-                    by adding <code>RunWithDrivine()</code> at the top of the spec:
-                </p>
-            </div>
-
-            <div class="code-sample"><pre><code>RunWithDrivine();
-describe('RouteRepository', () => {
-    let repo: RouteRepository;
-
-    beforeAll(async () => {
-        const app: TestingModule = await Test.createTestingModule({
-            imports: [AppModule],
-            providers: [RouteRepository],
-            controllers: []
-        }).compile();
-        repo = app.get(RouteRepository);
-    });
-
-    it('should find routes between two cities, ordered by most expedient', async () => {
-        const results = await repo.findRoutesBetween('Cavite Island', 'NYC');
-        expect(results.length).toBeGreaterThan(0);
-        expect(results[0].travelTime).toEqual(26);
-    });
-
-});
-</code></pre>
-            </div>
 
 
             <!---- FEATURES AND DESIGN GOALS -->
@@ -638,14 +340,12 @@ describe('RouteRepository', () => {
         <div class="quote-pattern"></div>
         <div class="row">
             <div class="twelve columns parallax-container">
-                <h1 class="parallax-title">STARTER TEMPLATE</h1>
+                <h1 class="parallax-title">FREE INCLUSIONS</h1>
 
                 <div class="parallax-divider">
                     <img src="images/icons/60px/white/appbar.camera.png" alt="Read More About Us">
                 </div>
-                <h2 class="parallax-subtitle">Graph database koans, for typical use-cases - recommendations, social
-                    networks, etc
-                    <br/>Each presented in a Drivine style.</h2>
+                <h2 class="parallax-subtitle">We offer you $949 value of free essential inclusions with every bike!</h2>
             </div>
         </div>
     </div>
@@ -824,7 +524,7 @@ describe('RouteRepository', () => {
         <div class="row">
 
             <div class="twelve columns page-content">
-                <h1 class="page-title">Meet The Contributors</h1>
+                <h1 class="page-title">Bike Synergy Team</h1>
 
                 <h2 class="page-subtitle" style="padding-top: 20px">The <span>order of the divine driver</span> needs you!
                     <span>Bayesian inference</span> or other <span>necromancy</span> skills are not required. <span>Supernatural powers will be conferred</span>.</h2>
@@ -943,8 +643,7 @@ describe('RouteRepository', () => {
                 <div class="parallax-divider">
                     <img src="images/icons/60px/white/appbar.cogs.png" alt="Read More About Us">
                 </div>
-                <h2 class="parallax-subtitle">Support multiple graph databases. Simultaneously, if you wish!<br>Currently
-                    <span>Neo4j</span> and <span>AgensGraph</span>.</h2>
+                <h2 class="parallax-subtitle">Saul is a fully qualified bicycle repair technician with over THIRTY YEARS experience.</h2>
             </div>
         </div>
     </div>
@@ -968,12 +667,10 @@ describe('RouteRepository', () => {
             <div class="twelve columns page-content">
 
 
-                <h3 class="faq-on" onclick="showhide('faq-1');">Q. Can I ask questions here?</h3>
+                <h3 class="faq-on" onclick="showhide('faq-1');">Q. What are the differences between 'dual suspension' and 'hardtail' bikes?</h3>
 
                 <p id="faq-1" class="answer">
-                    <strong>A.</strong> Yes. <br/><br/>
-                    Please send me a tweet <a href="https://twitter.com/doctor_cerulean">@doctor_cerulean</a> and I will
-                    answer as best as I can.
+                    Dual suspension bikes have suspension on the front and the rear of the bike. Hardtail bikes have suspension at the front only, and a rigid rear end. Dual suspension bikes are the most popular bike at Glengarry. Dual suspension bikes are best suited to rugged terrain.
                 </p>
 
                 <span class="notetick"></span>
