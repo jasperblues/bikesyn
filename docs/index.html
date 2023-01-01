@@ -88,6 +88,80 @@
                 $('.parallax-six').parallax("50%", 0.5);
             }
 
+            $('#submit').click(function () {
+
+                //Get the data from all the fields
+                const name = $('input[name=name]');
+                const email = $('input[name=email]');
+                const phonenumber = $('input[name=phonenumber]');
+                const website = $('input[name=website]');
+                const projectbudget = $('input[name=projectbudget]');
+                const timeframe = $('input[name=timeframe]');
+                const youreinterestedin = $('input[name=youreinterestedin]');
+                const howdidyouhearaboutus = $('input[name=howdidyouhearaboutus]');
+                const comment = $('textarea[name=comment]');
+
+                //Simple validation to make sure user entered something
+                //If error found, add hightlight class to the text field
+                if (name.val() == '') {
+                    name.addClass('hightlight');
+                    return false;
+                } else name.removeClass('hightlight');
+
+                if (email.val() == '') {
+                    email.addClass('hightlight');
+                    return false;
+                } else email.removeClass('hightlight');
+
+                if (comment.val() == '') {
+                    comment.addClass('hightlight-message');
+                    return false;
+                } else comment.removeClass('hightlight-message');
+
+                //organize the data properly
+                var data = 'name=' + name.val() + '&email=' + email.val() + '&phonenumber=' + phonenumber.val() + '&website=' + website.val() + '&projectbudget=' + projectbudget.val() + '&timeframe=' + timeframe.val() + '&youreinterestedin=' + youreinterestedin.val() + '&howdidyouhearaboutus=' + howdidyouhearaboutus.val() + '&comment=' + encodeURIComponent(comment.val());
+
+                //disabled all the text fields
+                $('.text').attr('disabled', 'true');
+
+                //show the loading sign
+                document.getElementById("submit").disabled = true;
+                document.getElementById("submit").value = 'Please Wait..';
+
+                //start the ajax
+                $.ajax({
+                    //this is the php file that processes the data and send mail
+                    url: "https://submit-form.com/QqpMlzGZ",
+
+                    headers: { 'Access-Control-Allow-Origin': '*' }, //TODO: Remove this
+                    type: "POST",
+                    data: data,
+                    cache: false,
+
+                    success: function (html) {
+                        //if process.php returned 1/true (send mail success)
+                        if (html == 1) {
+                            //hide the form
+                            $('.contact-form-div').fadeOut('slow');
+
+                            //show the success message
+                            $('.done').fadeIn('slow');
+
+                            //if process.php returned 0/false (send mail failed)
+                        } else alert('Sorry, unexpected error. Please try again later.');
+                    },
+                    error: function (html) {
+                        $('.contact-form-div').fadeOut('slow');
+                        //show the success message
+                        $('.done').fadeIn('slow');
+                    }
+
+                });
+
+                //cancel the submit button default behaviours
+                return false;
+            });
+
         })
     </script>
 
@@ -262,7 +336,7 @@
                     With <span>Bike Synergy</span>, the customer experience does not end when you walk out the door. Instead,
                     we treat that day as the start of your journey, because it lasts throughout the duration of owning your bike and beyond!</p>
 
-                <p class="testimonial-content mobile-four">Our dream is that you will <span>love the experiences &amp; growth</span> that your bike brings. That it will bring you as much <span>joy</span> as <span>cycling brings to us!</p>
+                <p class="testimonial-content mobile-four">Our dream is that you will <span>love the experiences &amp; growth</span> that your bike brings. That it will bring you as much <span>joy</span> as <span>cycling brings to us!</span></p>
 
             </div>
 
@@ -724,7 +798,7 @@
 <!--                            </div>-->
                             <div class="done"><b style="color:#e44d26;">THANK YOU!</b><br> We have received your message.</div>
 
-                            <form method="post" action="contact-form.php">
+                            <form method="post" action="">
                                 <div class="twelve columns contact-form-div">
                                     <div class="eight columns mobile-four-760">
                                         <div class="six columns first-column -670">
