@@ -51,6 +51,7 @@
     <link rel="stylesheet" href="stylesheets/supersized.shutter.css" type="text/css" media="screen"/>
     <link rel="stylesheet" href="stylesheets/prettyPhoto.css" type="text/css" media="screen"
           title="prettyPhoto main stylesheet"/>
+    <link href='app.css' rel='stylesheet' type='text/css'>
 
     <!-- Google Web Fonts -->
     <link href='stylesheets/fonts.css' rel='stylesheet' type='text/css'>
@@ -229,7 +230,7 @@
 
 <div class="header-container">
 
-   <div style="cursor: pointer"><img onclick="moveTo('#portfolio')" style="position: absolute; top: 0; right: 0; border: 0; width: 149px" src="images/ribbon.png" alt="Bike Matching Service!"></div>
+   <div style="cursor: pointer"><img onclick="moveTo('#shop')" style="position: absolute; top: 0; right: 0; border: 0; width: 149px" src="images/ribbon.png" alt="Shop!"></div>
 
     <!-- Basic Needs -->
     <div class="row">
@@ -245,11 +246,10 @@
                 <ul class="right">
                     <li><a href="#homepage">Home</a></li>
                     <li><a href="#about-us">About Us</a></li>
-                    <li><a href="#portfolio">Bike Matching</a></li>
+                    <li><a href="#shop">Shop</a></li>
                     <li><a href="#our-team">Team</a></li>
                     <li><a href="#faq">FAQ</a></li>
                     <li><a href="#contact">Contact</a></li>
-                    <li><a href="/shop.html">Shop</a></li>
                 </ul>
             </section>
 
@@ -408,115 +408,57 @@
     </div>
 
     <!-- Sample app Page -->
-    <div class="page-container pattern-2" id="portfolio">
+    <div class="page-container pattern-2" id="shop">
 
         <div class="row">
-
             <div class="twelve columns page-content">
-                <h1 class="page-title">Bike Matching</h1>
-
-                <h2 class="page-subtitle" style="padding-bottom:50px;">Be matched with the <span>optimal bike</span> to <br/>fulfill your <span>budget</span> and cycling <span>aspirations</span>!</h2>
+                <h1 class="page-title">Shop</h1>
             </div>
+            <section class="container mx-auto flex flex-col items-center">
+                <div class="mt-[50px] p-2 flex justify-between w-full">
+                    <div class="grow">
+                        <p class="text-md font-medium text-slate-500 text-left">Showing all 7 results</p>
+                    </div>
 
-
-            <div class="twelve columns portfolio">
-                <ul class="ourHolder">
-                    <li class="four columns item ">
-                        <div class="portfolio-item">
-                            <div class="portfolio-cat-image">
-                                <img src="images/icons/40px/white/96.png" alt="Portfolio Category Image">
-                            </div>
-                            <div class="portfolio-hover-details hide-for-small">
-                                <div class="open-portfolio">
-                                    <a href="images/portfolio/1.png" class="open-portfolio-large" rel="prettyPhoto"></a>
-                                </div>
-                            </div>
-                            <a href="images/portfolio/large/1.png" class="photo-link" rel="prettyPhoto"><img
-                                    src="images/portfolio/1.png" alt="Portfolio Item" class="wide-image"></a>
-
-                            <div class="portfolio-details hide-for-small">
-                                <h4 class="portfolio-title"><a href="#"
-                                                               data-reveal-id="single-project-photo">Describe</a></h4>
-
-                                <div class="portfolio-divider"></div>
-                                <p class="portfolio-categories">Complete a short questionnaire below</p>
-                            </div>
+                    <div>
+                        <button id="cart-sort-dropdown" data-dropdown-toggle="filter-dropdown" class="text-slate-700 font-medium border border-slate-200 rounded-md text-md px-5 py-2.5 text-center inline-flex items-center" type="button">Sort by price: low to high<svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                        </svg></button>
+                        <!-- Dropdown menu -->
+                        <div id="filter-dropdown" class="z-10 hidden bg-zinc-50/95 divide-y divide-gray-100 rounded-lg shadow-lg w-56 shadow-slate-300/50">
+                            <ul class="py-2 text-sm text-gray-700" aria-labelledby="dropdownDefaultButton">
+                                <li v-for="item in shop.shopActions">
+                                    <a href="#" class="block px-4 py-2 hover:bg-gradient-to-r hover:from-slate-100 hover:to-slate-200" @click="shop.handleSort(item)">{{ item.name }}</a>
+                                </li>
+                            </ul>
                         </div>
-                    </li>
-                    <li class="four columns item ">
-                        <div class="portfolio-item">
-                            <div class="portfolio-cat-image">
-                                <img src="images/icons/40px/white/96.png" alt="Portfolio Category Image">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-2 place-content-center w-full">
+                    <div v-for="item in shop.catalog">
+                        <div class="group max-w-sm  border border-zinc-50 hover:border-zinc-200 rounded-lg hover:shadow">
+                            <div class="px-2">
+                                <a href="#" class="m-2">
+                                    <div class="relative bg-local bg-contain bg-center bg-no-repeat h-64" :style="{'background-image': `url(${item.imagePath})`}">
+                                        <span v-if="item.discount" class="absolute top-5 left-5 bg-orange-700 text-white p-2 rounded-tr-2xl shadow-md shadow-orange-400/50">SALE</span>
+                                        <span class="absolute text-center bottom-0 left-0 bg-zinc-700 text-white p-2 rounded-t-xl shadow-md shadow-slate-400/50 w-full transition-opacity opacity-0 group-hover:opacity-100 ease-in duration-300 transform">SELECT OPTIONS</span>
+                                    </div>
+                                </a>
                             </div>
-                            <div class="portfolio-hover-details hide-for-small">
-                                <div class="open-portfolio">
-                                    <a href="images/portfolio/2.png" class="open-portfolio-large" rel="prettyPhoto"></a>
-
-                                </div>
-                            </div>
-                            <a href="images/portfolio/large/2.jpg" class="photo-link" rel="prettyPhoto"><img
-                                    src="images/portfolio/2.png" alt="Portfolio Item" class="wide-image"></a>
-
-                            <div class="portfolio-details hide-for-small">
-                                <h4 class="portfolio-title"><a href="#" data-reveal-id="single-project-video">Submit Online</a>
-                                </h4>
-
-                                <div class="portfolio-divider"></div>
-                                <p class="portfolio-categories">Saul reviews your goals &amp; current offers</p>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="four columns item ">
-                        <div class="portfolio-item">
-                            <div class="portfolio-cat-image">
-                                <img src="images/icons/40px/white/96.png" alt="Portfolio Category Image">
-                            </div>
-                            <div class="portfolio-hover-details hide-for-small">
-                                <div class="open-portfolio">
-                                    <a href="images/portfolio/3.png" class="open-portfolio-large" rel="prettyPhoto"></a>
+                            <div class="p-5">
+                                <a href="#">
+                                    <h5 class="mb-2 text-md font-bold tracking-tight text-gray-900">{{item.title}}</h5>
+                                </a>
+                                <div class="flex gap-2">
+                                    <p class="mb-3 font-semibold text-slate-700" :class="{ 'line-through font-normal text-slate-400': item.discount != null }">${{item.normalPrice}}</p>
+                                    <p v-show="item.discount" class="mb-3 font-semibold text-blue-500">${{item.discount}}</p>
 
                                 </div>
                             </div>
-                            <a href="images/portfolio/large/3.png" class="photo-link" rel="prettyPhoto"><img
-                                    src="images/portfolio/3.png" alt="Portfolio Item" class="wide-image"></a>
-
-                            <div class="portfolio-details hide-for-small">
-                                <h4 class="portfolio-title"><a href="#" data-reveal-id="single-project-photo">Receive Recommendation</a></h4>
-
-                                <div class="portfolio-divider"></div>
-                                <p class="portfolio-categories">And then your bike is personally delivered! </p>
-                            </div>
                         </div>
-                    </li>
-
-                </ul>
-            </div>
-
-
-            <div>
-                <h3 class="about-us-title" style="font-size:20px;">HOW IT WORKS</h3>
-            </div>
-
-            <div class="four columns statistics" style="width:100%; padding-bottom:100px;">
-                <div class="twelve columns by-numbers projects-numbers ">
-                    <p class="by-numbers-text">Rather than <span>maintain a large inventory</span> that we need to sell, we use <span>industry connections</span> and a <span>network</span> of suppliers.</p>
+                    </div>
                 </div>
-                <div class="twelve columns by-numbers projects-numbers ">
-                    <p class="by-numbers-text">This means that when <span>new innovations</span> &amp; <span>improvements</span> are available we can <span>source them quickly</span>.</p>
-                </div>
-                <div class="twelve columns by-numbers projects-numbers ">
-                    <p class="by-numbers-text">We do this without <span>making a loss</span> on older stocked items &amp; we pass this saving <span>on to you</span>!</p>
-                </div>
-                <div class="twelve columns by-numbers projects-numbers ">
-                    <p class="by-numbers-text">We <span>get to know you</span>, and offer a <span>personalized recommendation</span> that is informed by <span>decades of professional passion.</span>
-                    </p>
-                </div>
-
-            </div>
-
-            <div>
-                <h3 class="about-us-title" style="font-size:20px;">[QUESTIONNAIRE FORM GOES HERE]</h3>
-            </div>
+            </section>
 
         </div>
     </div>
@@ -1071,6 +1013,111 @@
     <script src="javascripts/jquery.fitvids.js"></script>
     <script>
         $(".single-project-image-video").fitVids();
+    </script>
+
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script type="module">
+        import { createApp, reactive } from 'https://unpkg.com/petite-vue?module'
+
+
+        const shop = reactive({
+            // el: '#shop',
+            shopActions: [
+                {name: 'Sort by price: low to high'},
+                {name: 'Sort by price: high to low'},
+                {name: 'Sort by popularity'},
+                {name: 'Sort by average rating'},
+                {name: 'Sort by latest'},
+            ],
+            catalog: [
+                {
+                    imagePath: 'https://bikesynergy.com.au/wp-content/uploads/2020/05/BC795F45-17FC-4F51-96B6-CDAC9241588C.webp',
+                    title: 'OPTION 2 – Norco Fluid FS4 Dual Suspension Bike and Gear Package – RED ~ COMPLETE WITH FREE HOME DELIVERY +ACCESSORIES & UNLIMITED SERVICING  AT GLENGARRY VALUED AT $933',
+                    normalPrice: '4,132.00',
+                    discount: '3,199.00'
+                },
+                {
+                    imagePath: 'https://bikesynergy.com.au/wp-content/uploads/2020/09/7C8F50B8-8E9F-4492-833E-295D3A06FA94.png',
+                    title: 'OPTION 2 – Norco Fluid FS4 Dual Suspension Bike and Gear Package – BLACK ~ COMPLETE WITH FREE HOME DELIVERY +ACCESSORIES & UNLIMITED SERVICING  AT GLENGARRY VALUED AT $933',
+                    normalPrice: '4,132.00',
+                    discount: '3,199.00'
+                },
+                {
+                    imagePath: 'https://bikesynergy.com.au/wp-content/uploads/2021/10/DAD2C80F-ED2B-47D3-82F1-A28DB9B3DF47.png',
+                    title: 'OPTION 1: Hardtail – Beginner Bike and Gear Package.',
+                    normalPrice: '1,854.00',
+                    discount: '1,299.00'
+                },
+                {
+                    imagePath: 'https://bikesynergy.com.au/wp-content/uploads/2021/06/5FEE42AD-B9CE-4AF8-81FD-0DD723EC4149.jpeg',
+                    title: 'Save $795 > Dual Suspension BIKE, GEAR & SERVICING PACKAGE – Merida 120-600 ADVANCED Bike and Gear Package.*RED*',
+                    normalPrice: '4,294.00',
+                    discount: '3,944.00'
+                },
+                {
+                    imagePath: 'https://bikesynergy.com.au/wp-content/uploads/2021/05/9D63379D-DF9D-4204-8A37-08958A76A500.jpeg',
+                    title: 'SAVE $933 > Dual Suspension BIKE, GEAR AND SERVICING PACKAGE – FREE HOME DELIVERY – Merida 120-600 ADVANCED Bike and Gear Package.*GREY*',
+                    normalPrice: '4,294.00',
+                    discount: '3,499.00'
+                },
+                {
+                    imagePath: 'https://bikesynergy.com.au/wp-content/uploads/2020/08/22138495-7EB5-4AD3-AFBE-036B1190833D.jpeg',
+                    title: 'STOCK CLEARANCE – Save $1933 – Norco Optic Carbon Fibre Dual Suspension Bike and Gear Package',
+                    normalPrice: '7,932.00',
+                    discount: '5,999.00'
+                },
+                {
+                    imagePath: 'https://bikesynergy.com.au/wp-content/uploads/2020/08/22138495-7EB5-4AD3-AFBE-036B1190833D.jpeg',
+                    title: 'STOCK CLEARANCE – Save $1933 – Norco Optic Carbon Fibre Dual Suspension Bike and Gear Package',
+                    normalPrice: '7,932.00',
+                },
+            ],
+            handleSort(sort){
+                // TODO: handle sort
+                console.log(sort)
+            }
+        });
+
+        createApp({shop})
+            .mount('#shop')
+    </script>
+    <script>
+        // get the button
+        var button = document.querySelector('#cart-sort-dropdown');
+
+        // get the dropdown
+        var dropdown = document.querySelector('#filter-dropdown');
+
+        // create a popper instance
+        var popperInstance = Popper.createPopper(button, dropdown, {
+            placement: 'bottom', // change this to position your dropdown
+            modifiers: [
+                {
+                    name: 'offset',
+                    options: {
+                        offset: [0, 10],
+                    },
+                },
+            ],
+        });
+
+        // handle click on the button
+        button.addEventListener('click', function () {
+            // toggle dropdown visibility
+            dropdown.classList.toggle('hidden');
+
+            // if dropdown is visible, update the popper instance
+            if (!dropdown.classList.contains('hidden')) {
+                popperInstance.update();
+            }
+        });
+
+        // hide dropdown when clicking outside
+        window.addEventListener('click', function (event) {
+            if (button !== event.target && dropdown.contains(event.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
     </script>
 
 </body>

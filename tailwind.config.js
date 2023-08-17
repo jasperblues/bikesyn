@@ -5,12 +5,6 @@ export default {
     ],
     theme: {
         extend: {
-            backgroundImage: {
-                'nav-bg': "url(images/header-background.png)",
-            },
-            container: {
-                padding: '16rem',
-            },
         },
     },
     plugins: [],
