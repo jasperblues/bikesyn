@@ -425,10 +425,10 @@
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
                         </svg></button>
                         <!-- Dropdown menu -->
-                        <div id="filter-dropdown" class="z-10 hidden bg-zinc-50/95 divide-y divide-gray-100 rounded-lg shadow-lg w-56 shadow-slate-300/50">
-                            <ul class="py-2 text-sm text-gray-700" aria-labelledby="dropdownDefaultButton">
+                        <div id="filter-dropdown" class="z-10 hidden bg-zinc-50/95 divide-y divide-gray-100 rounded-lg shadow-lg w-96 shadow-slate-300/50">
+                            <ul class="py-2 text-md text-gray-700 w-full" aria-labelledby="dropdownDefaultButton">
                                 <li v-for="item in shop.shopActions">
-                                    <a href="#" class="block px-4 py-2 hover:bg-gradient-to-r hover:from-slate-100 hover:to-slate-200" @click="shop.handleSort(item)">{{ item.name }}</a>
+                                    <a href="#" class="text-left block px-8 py-2 hover:bg-gradient-to-r hover:from-slate-100 hover:to-slate-200" @click="shop.handleSort(item)">{{ item.name }}</a>
                                 </li>
                             </ul>
                         </div>
