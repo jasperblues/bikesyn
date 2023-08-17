@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if IE 8]>
+<html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]>
+<!-->
+<html class="no-js" lang="en"><!--<![endif]-->
+<head>
+    <meta charset="utf-8"/>
+
+
+    <title>Bike Synergy - Glengarry Mountain Bikes</title>
+    <meta name="description" content="Bike Synergy - Glengarry Mountain Bikes">
+
+    <!-- mobile stuff -->
+    <meta name="viewport" content="width=device-width"/>
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes"/>
+
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="apple-touch-icon-144x144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="apple-touch-icon-114x114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="apple-touch-icon-72x72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="apple-touch-icon-57x57-precomposed.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="shortcut icon" href="favicon.ico"/>
+
+    <!-- This script prevents links from opening in Mobile Safari. https://gist.github.com/1042026 -->
+    <script>(function (a, b, c) {
+        if (c in b && b[c]) {
+            var d, e = a.location, f = /^(a|html)$/i;
+            a.addEventListener("click", function (a) {
+                d = a.target;
+                while (!f.test(d.nodeName)) d = d.parentNode;
+                "href" in d && (d.href.indexOf("http") || ~d.href.indexOf(e.host)) && (a.preventDefault(), e.href = d.href)
+            }, !1)
+        }
+    })(document, window.navigator, "standalone")</script>
+
+    <link href='app.css' rel='stylesheet' type='text/css'>
+</head>
+<body id="shop" v-scope="{ show: false }">
+<header class="relative z-50">
+    <nav class="h-[50px] bg-[url(images/header-background.png)] bg-fixed bg-slate-500 shadow-lg shadow-slate-500/50 fixed w-full">
+        <div class="container mx-auto flex items-center">
+            <div class="grow">
+                <h1 class="text-3xl text-white p-2">BIKE SYNERGY</h1>
+            </div>
+            <section>
+                <ul class="flex gap-x-8 text-sm">
+                    <li><a href="/#homepage">HOME</a></li>
+                    <li><a href="/#about-us">ABOUT US</a></li>
+                    <li><a href="/#portfolio">BIKE MATCHING</a></li>
+                    <li><a href="/#our-team">TEAM</a></li>
+                    <li><a href="/#faq">FAQ</a></li>
+                    <li><a href="/#contact">CONTACT</a></li>
+                    <li><a href="/shop.html">SHOP</a></li>
+                    <li>
+                        <svg class="w-5 h-5 stroke-[#01414e]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                        </svg>
+
+                    </li>
+                </ul>
+            </section>
+        </div>
+    </nav>
+</header>
+<main class="h-full bg-[url(images/patterns/groovepaper.png)] bg-fixed bg-slate-500 shadow-lg shadow-slate-500/50">
+    <section class="container mx-auto flex flex-col items-center">
+        <div class="mt-[50px] p-2 flex justify-between w-full">
+            <div class="grow">
+                <p class="text-sm font-medium text-slate-500">Showing all 7 results</p>
+            </div>
+
+            <div>
+                <button id="cart-sort-dropdown" data-dropdown-toggle="filter-dropdown" class="text-slate-700 font-medium border border-slate-200 rounded-md text-sm px-5 py-2.5 text-center inline-flex items-center" type="button">Sort by price: low to high<svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                </svg></button>
+                <!-- Dropdown menu -->
+                <div id="filter-dropdown" class="z-10 hidden bg-zinc-50/95 divide-y divide-gray-100 rounded-lg shadow-lg w-56 shadow-slate-300/50">
+                    <ul class="py-2 text-sm text-gray-700" aria-labelledby="dropdownDefaultButton">
+                        <li v-for="item in shop.shopActions">
+                            <a href="#" class="block px-4 py-2 hover:bg-gradient-to-r hover:from-slate-100 hover:to-slate-200" @click="shop.handleSort(item)">{{ item.name }}</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+            <div v-for="item in shop.catalog">
+                <div class="group max-w-sm  border border-zinc-50 hover:border-zinc-200 rounded-lg hover:shadow">
+                    <div class="px-2">
+                        <a href="#" class="m-2">
+                            <div class="relative bg-local bg-contain bg-center bg-no-repeat h-64" :style="{'background-image': `url(${item.imagePath})`}">
+                                <span v-if="item.discount" class="absolute top-5 left-5 bg-orange-700 text-white p-2 rounded-tr-2xl shadow-md shadow-orange-400/50">SALE</span>
+                                <span class="absolute text-center bottom-0 left-0 bg-zinc-700 text-white p-2 rounded-t-xl shadow-md shadow-slate-400/50 w-full transition-opacity opacity-0 group-hover:opacity-100 ease-in duration-300 transform">SELECT OPTIONS</span>
+                            </div>
+<!--                            <span class="absolute bottom-5 left-0">abc</span>-->
+<!--                            <img class="rounded-t-lg bg-white" :src="item.imagePath" :alt="item.title" />-->
+                        </a>
+                    </div>
+                    <div class="p-5">
+                        <a href="#">
+                            <h5 class="mb-2 text-md font-bold tracking-tight text-gray-900">{{item.title}}</h5>
+                        </a>
+                        <div class="flex gap-2">
+                            <p class="mb-3 font-semibold text-slate-700" :class="{ 'line-through font-normal text-slate-400': item.discount != null }">${{item.normalPrice}}</p>
+                            <p v-show="item.discount" class="mb-3 font-semibold text-blue-500">${{item.discount}}</p>
+
+                        </div>
+<!--                        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.</p>-->
+<!--                        <a href="#" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">-->
+<!--                            Read more-->
+<!--                            <svg class="w-3.5 h-3.5 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">-->
+<!--                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>-->
+<!--                            </svg>-->
+<!--                        </a>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!--    <script src="https://unpkg.com/petite-vue"></script>-->
+<script src="https://unpkg.com/@popperjs/core@2"></script>
+<script type="module">
+    import { createApp, reactive } from 'https://unpkg.com/petite-vue?module'
+
+
+    const shop = reactive({
+        // el: '#shop',
+        shopActions: [
+            {name: 'Sort by price: low to high'},
+            {name: 'Sort by price: high to low'},
+            {name: 'Sort by popularity'},
+            {name: 'Sort by average rating'},
+            {name: 'Sort by latest'},
+        ],
+        catalog: [
+            {
+                imagePath: 'https://bikesynergy.com.au/wp-content/uploads/2020/05/BC795F45-17FC-4F51-96B6-CDAC9241588C.webp',
+                title: 'OPTION 2 – Norco Fluid FS4 Dual Suspension Bike and Gear Package – RED ~ COMPLETE WITH FREE HOME DELIVERY +ACCESSORIES & UNLIMITED SERVICING  AT GLENGARRY VALUED AT $933',
+                normalPrice: '4,132.00',
+                discount: '3,199.00'
+            },
+            {
+                imagePath: 'https://bikesynergy.com.au/wp-content/uploads/2020/09/7C8F50B8-8E9F-4492-833E-295D3A06FA94.png',
+                title: 'OPTION 2 – Norco Fluid FS4 Dual Suspension Bike and Gear Package – BLACK ~ COMPLETE WITH FREE HOME DELIVERY +ACCESSORIES & UNLIMITED SERVICING  AT GLENGARRY VALUED AT $933',
+                normalPrice: '4,132.00',
+                discount: '3,199.00'
+            },
+            {
+                imagePath: 'https://bikesynergy.com.au/wp-content/uploads/2021/10/DAD2C80F-ED2B-47D3-82F1-A28DB9B3DF47.png',
+                title: 'OPTION 1: Hardtail – Beginner Bike and Gear Package.',
+                normalPrice: '1,854.00',
+                discount: '1,299.00'
+            },
+            {
+                imagePath: 'https://bikesynergy.com.au/wp-content/uploads/2021/06/5FEE42AD-B9CE-4AF8-81FD-0DD723EC4149.jpeg',
+                title: 'Save $795 > Dual Suspension BIKE, GEAR & SERVICING PACKAGE – Merida 120-600 ADVANCED Bike and Gear Package.*RED*',
+                normalPrice: '4,294.00',
+                discount: '3,944.00'
+            },
+            {
+                imagePath: 'https://bikesynergy.com.au/wp-content/uploads/2021/05/9D63379D-DF9D-4204-8A37-08958A76A500.jpeg',
+                title: 'SAVE $933 > Dual Suspension BIKE, GEAR AND SERVICING PACKAGE – FREE HOME DELIVERY – Merida 120-600 ADVANCED Bike and Gear Package.*GREY*',
+                normalPrice: '4,294.00',
+                discount: '3,499.00'
+            },
+            {
+                imagePath: 'https://bikesynergy.com.au/wp-content/uploads/2020/08/22138495-7EB5-4AD3-AFBE-036B1190833D.jpeg',
+                title: 'STOCK CLEARANCE – Save $1933 – Norco Optic Carbon Fibre Dual Suspension Bike and Gear Package',
+                normalPrice: '7,932.00',
+                discount: '5,999.00'
+            },
+            {
+                imagePath: 'https://bikesynergy.com.au/wp-content/uploads/2020/08/22138495-7EB5-4AD3-AFBE-036B1190833D.jpeg',
+                title: 'STOCK CLEARANCE – Save $1933 – Norco Optic Carbon Fibre Dual Suspension Bike and Gear Package',
+                normalPrice: '7,932.00',
+            },
+        ],
+        handleSort(sort){
+            // TODO: handle sort
+            console.log(sort)
+        }
+    });
+
+    createApp({shop})
+        .mount('#shop')
+</script>
+<script>
+    // get the button
+    var button = document.querySelector('#cart-sort-dropdown');
+
+    // get the dropdown
+    var dropdown = document.querySelector('#filter-dropdown');
+
+    // create a popper instance
+    var popperInstance = Popper.createPopper(button, dropdown, {
+        placement: 'bottom', // change this to position your dropdown
+        modifiers: [
+            {
+                name: 'offset',
+                options: {
+                    offset: [0, 10],
+                },
+            },
+        ],
+    });
+
+    // handle click on the button
+    button.addEventListener('click', function () {
+        // toggle dropdown visibility
+        dropdown.classList.toggle('hidden');
+
+        // if dropdown is visible, update the popper instance
+        if (!dropdown.classList.contains('hidden')) {
+            popperInstance.update();
+        }
+    });
+
+    // hide dropdown when clicking outside
+    window.addEventListener('click', function (event) {
+        if (button !== event.target && dropdown.contains(event.target)) {
+            dropdown.classList.add('hidden');
+        }
+    });
+</script>
+</body>
+</html>
